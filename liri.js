@@ -30,7 +30,19 @@
 
 		function searchedData(err, data, response) {
 
+			
+
+			fs.appendFile(textFile, data, function(err) {
+			  if (err) {
+			    console.log(err);
+			  } else {
+			    console.log("Content Added!");
+			  }
+
+			});
+
 			let t = data;
+
 
 			for (let i = 0; i < t.length; i++){
 				console.log("");
@@ -48,7 +60,19 @@
 
 	if (command === "do-what-it-says"){
 		fs.readFile("random.txt", "utf8", function(error, data){
-			console.log(data);
+			const thisway = JSON.stringify(data.split(",").join(""));
+			
+			for (let i = 3; i < process.argv.length; i++){
+				process.argv[i] = thisway;
+			}
+
+			spotify.search({type : 'track', query: song.length === 0 ? 'Ace of Base' : process.argv[3], limit: 1}, function(err,data){
+				if (err){
+					console.log('Error occurred ' + err);
+					return;
+				}
+			})
+
 		})
 	}
 
@@ -60,7 +84,7 @@
 			}	
 
 
-			spotify.search({ type: 'track', query: song, limit: 1 }, function(err, data) {
+			spotify.search({ type: 'track', query: song.length === 0 ? 'Ace of Base' : song, limit: 1 }, function(err, data) {
 			    if ( err ) {
 			        console.log('Error occurred: ' + err);
 			        return;
@@ -91,23 +115,26 @@
 			}	
 
 
-			let queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-
+			
+			let queryUrl = "http://www.omdbapi.com/?t=" + (movieName.length === 0 ? 'Mr Nobody' : movieName) + "&y=&plot=short&apikey=trilogy";
+			
 			console.log(queryUrl);
 
 			request(queryUrl, function(error, response, body) {
 			 
 			  if (!error && response.statusCode === 200) {
+			  	
+			  	const movieData = JSON.parse(body);
 
-			  	console.log(JSON.parse(body).JSON.parse(Ratings[1]));
-			    // console.log("The movie's title is: " + JSON.parse(body).Title);
-			    // console.log("This movie came out: " + JSON.parse(body).Released);
-			    // console.log("The movie's rating is: " + JSON.parse(body).imdbRating);
-			    // console.log("The movie's Rotten Tomatoes rating is: " + JSON.parse(body)['Ratings'][1]['value']);
-			    // console.log("The movie was produced in: " + JSON.parse(body).Country);
-			    // console.log("The movie's language is: " + JSON.parse(body).Language);
-			    // console.log("The movie's plot is: " + JSON.parse(body).Plot);
-			    // console.log("The movie's actors are: " + JSON.parse(body).Actors);
+			  	
+			    console.log("The movie's title is: " + movieData.Title);
+			    console.log("This movie came out: " + movieData.Released);
+			    console.log("The movie's rating is: " + movieData.imdbRating);
+			    console.log("The movie's Rotten Tomatoes rating is: " + JSON.stringify(movieData.Ratings[1]));
+			    console.log("The movie was produced in: " + movieData.Country);
+			    console.log("The movie's language is: " + movieData.Language);
+			    console.log("The movie's plot is: " + movieData.Plot);
+			    console.log("The movie's actors are: " + movieData.Actors);
 
 			  } 
 
