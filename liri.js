@@ -30,17 +30,6 @@
 
 		function searchedData(err, data, response) {
 
-			
-
-			fs.appendFile(textFile, data, function(err) {
-			  if (err) {
-			    console.log(err);
-			  } else {
-			    console.log("Content Added!");
-			  }
-
-			});
-
 			let t = data;
 
 
@@ -58,28 +47,11 @@
 	const spotify = new Spotify(keys.spotify);
 	const song = [];
 
-	if (command === "do-what-it-says"){
-		fs.readFile("random.txt", "utf8", function(error, data){
-			const thisway = JSON.stringify(data.split(",").join(""));
-			
-			for (let i = 3; i < process.argv.length; i++){
-				process.argv[i] = thisway;
-			}
-
-			spotify.search({type : 'track', query: song.length === 0 ? 'Ace of Base' : process.argv[3], limit: 1}, function(err,data){
-				if (err){
-					console.log('Error occurred ' + err);
-					return;
-				}
-			})
-
-		})
-	}
 
 		function spot(){
 
 			for (let i = 3; i < process.argv.length; i++){
-				const songName = process.argv[i];
+				let songName = process.argv[i];
 				song.push(songName);
 			}	
 
@@ -141,9 +113,46 @@
 			});
 		}
 
+    const doWhatItSays = function(){
 
-	if (command === 'spotify-this-song'){ console.log(spot()); }
+    fs.readFile("random.txt", "utf8", function(data,err) {
+	    
+	     if(err) {
+	     	console.log(err);
+	     } else{
 
-    if (command === 'movie-this'){ console.log(movies()); }
+			    const dataArr = data.split(",");
 
-    if (command === "my-tweets"){ console.log(tweets()); } 
+			     if (dataArr.length === 2) {
+
+			     	pick(dataArr[0], dataArr[1]);
+
+			     } 
+
+			     else if (dataArr.length === 1) {
+
+			     	pick(dataArr[0]);
+
+			     }
+			    }
+	        })
+	    }
+		
+		const pick = function(){
+
+			if (command === 'spotify-this-song'){ console.log(spot()); }
+
+		    if (command === 'movie-this'){ console.log(movies()); }
+
+		    if (command === 'my-tweets'){ console.log(tweets()); } 
+
+		    if (command === 'do-what-it-says') {doWhatItSays(); }
+	      
+	    }    
+
+	    //write another function that runs pick
+	    const runThis = function(argOne,argTwo){
+	    	pick(argOne,argTwo);
+	    }
+
+	    runThis(process.argv[2],process.argv[3]);
