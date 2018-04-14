@@ -12,3 +12,6 @@ exports.spotify = {
   secret: process.env.SPOTIFY_SECRET
 };
 
+exports.musixmatch = {
+	id: process.env.MUSIX_ID
+}

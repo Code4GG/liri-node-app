@@ -10,6 +10,10 @@ const fs = require('fs');
 
 const client = new Twitter(keys.twitter);
 
+var inquirer = require('inquirer');
+
+const music =  require('musicmatch');
+
 const params = {
 	screen_name: 'code_purposes',
 
@@ -37,6 +41,7 @@ function searchedData(err, data, response) {
 
 const Spotify = require('node-spotify-api');
 const spotify = new Spotify(keys.spotify);
+// const Musixmatch = new music(keys.musixmatch);
 
 
 function spot(songName) {
@@ -53,7 +58,7 @@ function spot(songName) {
 			console.log('Error occurred: ' + err);
 			return;
 		}
-
+		console.log(data);
 		console.log('');
 		console.log('This Artists name is: ' + data.tracks.items[0].album.artists[0].name);
 		console.log('');
@@ -111,6 +116,18 @@ let doWhatItSays = function() {
 	});
 };
 
+const Musixmatch = new music(keys.musixmatch);
+
+function musixmatch(){
+		Musixmatch.trackSearch({q:"Chet Faker - Gold ",page:1,page_size:3})
+		.then(function(data){
+				console.log(data);
+		}).catch(function(err){
+				console.log(err);
+		})
+}
+// <iframe src="https://open.spotify.com/embed?uri=spotify:album:1DFixLWuPkv3KT3TnV35m3&view=coverart" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+
 const pick = function(caseData, functionData) {
 	// console.log(`case data ${caseData}`);
 	// console.log(`function data ${functionData}`);
@@ -123,7 +140,10 @@ const pick = function(caseData, functionData) {
 		movies(functionData);
 	} else if (caseData === 'do-what-it-says') {
 		doWhatItSays();
-	} else {
+	} else if (caseData === 'musixmatch'){
+		musixmatch(functionData);
+	}
+	 else {
 		console.log("LIRI doesn't know that");
 	}
 };
@@ -133,4 +153,5 @@ const runThis = function(argOne, argTwo) {
 	pick(argOne, argTwo);
 };
 
+console.log("You're doing great");
 	runThis(process.argv[2], process.argv[3]);
